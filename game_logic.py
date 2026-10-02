@@ -1,4 +1,5 @@
 import random
+import os
 from ascii_art import STAGES
 
 WORDS = ["python", "git", "github", "snowman", "meltdown"]
@@ -18,23 +19,32 @@ def display_game_state(mistakes, secret_word, guessed_letters):
     print("Word: ", display_word)
     print("\n")
 
+def clear_terminal():
+    # 'cls' for Windows (nt), 'clear' for Linux/macOS
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 def play_game():
     mistakes = 0
     secret_word = get_random_word()
     guessed_letters = []
-
     print("Welcome to Snowman Meltdown!")
-    display_game_state(mistakes, secret_word, guessed_letters)
 
     while True:
+        clear_terminal()
+        
+        display_game_state(mistakes, secret_word, guessed_letters)
         guess = input("Guess a letter: ").lower()
+        #validate input
+        if len(guess) != 1 or not guess.isalpha():
+            status_message = "Invalid input! Please enter a single letter."
+            continue
+
         print("You guessed:", guess)
         if guess in secret_word:
             guessed_letters.append(guess)
             display_game_state(mistakes, secret_word, guessed_letters)
         elif guess not in secret_word:
             mistakes += 1
-            print(mistakes)
             display_game_state(mistakes, secret_word, guessed_letters)
 
         if all(letter in guessed_letters for letter in secret_word):
@@ -43,4 +53,3 @@ def play_game():
         if mistakes == 3:
             print("Too many mistakes")
             break
-        
